@@ -100,12 +100,7 @@ hello 8001, world 8001!
 
 [mysql-check doc](http://cbonte.github.io/haproxy-dconv/1.7/configuration.html#4-option%20mysql-check)
 
-```sql
--- mysql -u root -p
-USE mysql;
-CREATE USER 'haproxy'@'%';
-FLUSH PRIVILEGES;
-```
+checking `docker-compose exec mysqlmaster1 mysql -h ha1 -uroot -proot -vvv -e 'select * from bjca.t1'`.
 
 ## Thanks
 
