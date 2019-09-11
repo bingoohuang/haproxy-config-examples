@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  server1:
+    image: openresty/openresty:1.15.8.2-1-alpine
+    ports:
+      - 10081:8001
+      - 10082:8002
+    networks:
+      - haproxy-simple
+    volumes:
+      - './nginx:/etc/nginx/conf.d'
+  ha1:
+    image: haproxy:1.7.11-alpine
+    ports:
+      - 10080:80
+    networks:
+      - haproxy-simple
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+
+networks:
+  haproxy-simple:
+    name: haproxy-simple
