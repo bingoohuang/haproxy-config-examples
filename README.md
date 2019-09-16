@@ -2,7 +2,7 @@
 
 haproxy configuration examples
 
-## HAProxy Hardware recommandation
+## HAProxy Hardware recommendation
 
 Due to its way of working, HAProxy requires:
 
@@ -37,6 +37,48 @@ iptables tuning:
 * net.netfilter.nf_conntrack_max = 131072
 * when improperly configured, conntrack will prevent HAProxy from reaching high performance.
 * NOTE: just enabling iptables with connection tracking takes 20% of CPU, even with no rules.
+
+## MySQL cluster backup demo
+
+1. `cd mysql; docker-compose rm -fsv; docker-compose up`
+1. `cd java/jdbc-connection-pool-test; mvn clean package; java -jar target/jdbc-connection-pool-test-0.1.1-exec.jar`
+1. `enter line on java console to execute sql "select * from t1" and check result`
+1. `docker-compose start mysqlmaster1`
+1. `enter line on java console to execute sql "select * from t1" and re-check result`
+
+## Haproxy + Mysql Lost connection to MySQL server during query
+
+```sql
+mysql> select * from t1;
+ERROR 2013 (HY000): Lost connection to MySQL server during query
+```
+
+I think i find the reason.Haproxy itself has a timeout for server and client,I set the sever timeout and client timeout as same as mysql timeout which is 8 hour.Now it seems like this:
+
+```ini
+defaults
+    log                     global
+    mode                    tcp
+    option                  tcplog
+    option                  dontlognull
+    option                  http-server-close
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          480m
+    timeout server          480m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+```
+
+Hope can help others.
+
+1. [Haproxy + Mysql Lost connection to MySQL server during query](https://dba.stackexchange.com/questions/132964/haproxy-mysql-lost-connection-to-mysql-server-during-query)
+1. [ERROR 2006 (HY000): MySQL Server Has Gone Away… (HaProxy / Galera)](https://serverfault.com/questions/730403/error-2006-hy000-mysql-server-has-gone-away-haproxy-galera/730565#730565)
+1. [I use haproxy as banlancer for mariadb cluster，but got lost connection during query](https://stackoverflow.com/questions/37407021/i-use-haproxy-as-banlancer-for-mariadb-cluster-but-got-lost-connection-during-qu/37426548#37426548)
 
 ## HAProxy multi-process
 
