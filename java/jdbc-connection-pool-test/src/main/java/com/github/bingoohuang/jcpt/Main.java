@@ -1,5 +1,8 @@
 package com.github.bingoohuang.jcpt;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -9,8 +12,48 @@ import lombok.SneakyThrows;
 import lombok.val;
 
 public class Main {
-    private static final DruidDataSource ds = new DruidDataSource();
-    static {
+    private static final DruidDataSource ds = createDruidDataSource();
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        @Cleanup
+        val input = new Scanner(System.in);
+        for (; input.hasNextLine(); input.nextLine()) {
+            executeSQL("select * from t1");
+        }
+    }
+
+    @SneakyThrows
+    private static void executeSQL(String sql) {
+        try (val conn = ds.getConnection(); val stmt = conn.createStatement(); val rs = stmt.executeQuery(sql)) {
+            val rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            printColumnNames(rsmd, columnsNumber);
+
+            while (rs.next()) {
+                printRow(rs, columnsNumber);
+            }
+        }
+    }
+
+    private static void printRow(ResultSet rs, int columnsNumber) throws SQLException {
+        System.out.print(rs.getString(1));
+        for (int i = 2; i <= columnsNumber; i++) {
+            System.out.print(",  " + rs.getString(i));
+        }
+        System.out.println();
+    }
+
+    private static void printColumnNames(ResultSetMetaData rsmd, int columnsNumber) throws SQLException {
+        System.out.print(rsmd.getColumnName(1));
+        for (int i = 2; i <= columnsNumber; i++) {
+            System.out.print(",  " + rsmd.getColumnName(i));
+        }
+        System.out.println();
+    }
+
+    public static DruidDataSource createDruidDataSource() {
+        DruidDataSource ds = new DruidDataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         ds.setUrl("jdbc:mysql://127.0.0.1:13303/bjca?useSSL=false&useUnicode=true"
                 + "&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000&autoReconnect=true");
@@ -26,37 +69,7 @@ public class Main {
         ds.setTestWhileIdle(true);
         ds.setTestOnBorrow(false);
         ds.setTestOnReturn(false);
-    }
 
-    @SneakyThrows
-    public static void main(String[] args) {
-        String sql = "select * from t1";
-
-        @Cleanup
-        val input = new Scanner(System.in);
-        while (input.hasNextLine()) {
-            input.nextLine();
-
-            try (val conn = ds.getConnection(); val stmt = conn.createStatement(); val rs = stmt.executeQuery(sql)) {
-
-                val rsmd = rs.getMetaData();
-                int columnsNumber = rsmd.getColumnCount();
-                for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1)
-                        System.out.print(",  ");
-                    System.out.print(rsmd.getColumnName(i));
-                }
-                System.out.println();
-
-                while (rs.next()) {
-                    for (int i = 1; i <= columnsNumber; i++) {
-                        if (i > 1)
-                            System.out.print(",  ");
-                        System.out.print(rs.getString(i));
-                    }
-                    System.out.println();
-                }
-            }
-        }
+        return ds;
     }
 }
