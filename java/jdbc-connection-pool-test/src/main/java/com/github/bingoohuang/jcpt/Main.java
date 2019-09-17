@@ -2,7 +2,6 @@ package com.github.bingoohuang.jcpt;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -41,7 +40,8 @@ public class Main {
         }
     }
 
-    private static void printRow(ResultSet rs, int columnsNumber) throws SQLException {
+    @SneakyThrows
+    private static void printRow(ResultSet rs, int columnsNumber) {
         System.out.print(rs.getString(1));
         for (int i = 2; i <= columnsNumber; i++) {
             System.out.print(",  " + rs.getString(i));
@@ -49,7 +49,8 @@ public class Main {
         System.out.println();
     }
 
-    private static void printColumnNames(ResultSetMetaData rsmd, int columnsNumber) throws SQLException {
+    @SneakyThrows
+    private static void printColumnNames(ResultSetMetaData rsmd, int columnsNumber) {
         System.out.print(rsmd.getColumnName(1));
         for (int i = 2; i <= columnsNumber; i++) {
             System.out.print(",  " + rsmd.getColumnName(i));
