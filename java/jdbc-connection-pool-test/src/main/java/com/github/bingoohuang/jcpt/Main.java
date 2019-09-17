@@ -25,14 +25,19 @@ public class Main {
 
     @SneakyThrows
     private static void executeSQL(String sql) {
-        try (val conn = ds.getConnection(); val stmt = conn.createStatement(); val rs = stmt.executeQuery(sql)) {
-            val rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-            printColumnNames(rsmd, columnsNumber);
+        @Cleanup
+        val conn = ds.getConnection();
+        @Cleanup
+        val stmt = conn.createStatement();
+        @Cleanup
+        val rs = stmt.executeQuery(sql);
 
-            while (rs.next()) {
-                printRow(rs, columnsNumber);
-            }
+        val rsmd = rs.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        printColumnNames(rsmd, columnsNumber);
+
+        while (rs.next()) {
+            printRow(rs, columnsNumber);
         }
     }
 
