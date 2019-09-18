@@ -65,7 +65,7 @@ ETag: "5a91328c-10"
 Last-Modified: Sat, 24 Feb 2018 09:38:20 GMT
 Server: nginx/1.13.5
 
-<h1>Primary</h1>
+Primary
 
 Pausing nginx-keepalived-docker-demo-master_nginx_master_1 ... done
 HTTP/1.0 504 Gateway Time-out
@@ -73,9 +73,6 @@ Cache-Control: no-cache
 Connection: close
 Content-Type: text/html
 
-<html><body><h1>504 Gateway Time-out</h1>
-The server didn't respond in time.
-</body></html>
 
                        Name                                     Command               State            Ports
 ---------------------------------------------------------------------------------------------------------------------
@@ -91,7 +88,7 @@ ETag: "5a91328c-12"
 Last-Modified: Sat, 24 Feb 2018 09:38:20 GMT
 Server: nginx/1.13.5
 
-<h1>Secondary</h1>
+Secondary
 
 ➜  docker-compose ps; docker-compose unpause nginx_master; http :8000;  docker-compose ps;
                        Name                                     Command               State            Ports
@@ -109,7 +106,7 @@ ETag: "5a91328c-10"
 Last-Modified: Sat, 24 Feb 2018 09:38:20 GMT
 Server: nginx/1.13.5
 
-<h1>Primary</h1>
+Primary
 
                        Name                                     Command               State           Ports
 --------------------------------------------------------------------------------------------------------------------
@@ -158,3 +155,7 @@ root@0355d3b31934:/# ip link set eth0 down
 ```
 
 参考 [Docker解析：配置与权限管理](https://hustcat.github.io/docker-config-capabilities/)
+
+## 参考文章
+
+1. [Nginx+Keepalived实现站点高可用](https://yq.aliyun.com/articles/47355)
