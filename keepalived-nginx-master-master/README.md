@@ -1,5 +1,15 @@
 # keepalived-nginx-master-master
 
+命令列表:
+
+1. `docker-compose ps; http :8000; http :8001;`
+
+1. `docker-compose pause nginx_master; http :8000; http :8001; docker-compose ps; http :8000; http :8001;`
+1. `docker-compose unpause nginx_master; http :8000; http :8001; docker-compose ps;`
+
+1. `docker-compose pause nginx_slave; http :8000; http :8001; docker-compose ps; http :8000; http :8001;`
+1. `docker-compose unpause nginx_slave; http :8000; http :8001; docker-compose ps;`
+
 ```bash
 ➜  keepalived-nginx-master-master git:(master) ✗ docker-compose up -d --build
 ➜  keepalived-nginx-master-master git:(master) ✗ docker-compose ps; http :8000; http :8001;
@@ -190,12 +200,3 @@ keepalived-nginx-master-master_proxy_1          /docker-entrypoint.sh hapr ...  
 ## 参考文章
 
 1. [keepalived双实例配置](https://blog.51cto.com/jiayimeng/1896830)
-
-
-docker-compose ps; http :8000; http :8001;
-docker-compose pause nginx_master; http :8000; http :8001; docker-compose ps; http :8000; http :8001;
-docker-compose unpause nginx_master; http :8000; http :8001; docker-compose ps;
-
-docker-compose pause nginx_slave; http :8000; http :8001; docker-compose ps; http :8000; http :8001;
-docker-compose unpause nginx_slave; http :8000; http :8001; docker-compose ps;
-
